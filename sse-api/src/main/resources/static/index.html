@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SSE Demo</title>
+    <style>
+      body {
+        font-family: Arial;
+        max-width: 900px;
+        margin: 50px auto;
+        padding: 20px;
+      }
+      .event-box {
+        border: 1px solid #ccc;
+        padding: 15px;
+        margin: 10px 0;
+        height: 300px;
+        overflow-y: scroll;
+      }
+      .event {
+        padding: 5px;
+        margin: 5px 0;
+        background: #f0f0f0;
+        border-left: 4px solid #007bff;
+      }
+      button {
+        padding: 10px 20px;
+        margin: 5px;
+        cursor: pointer;
+      }
+      .stock {
+        background: #d4edda !important;
+        border-left-color: #28a745 !important;
+      }
+      .notification {
+        background: #fff3cd !important;
+        border-left-color: #ffc107 !important;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Server-Sent Events (SSE) Demo</h1>
+
+    <h3>Basic Stream (1 event/second)</h3>
+    <button onclick="startStream()">Start Stream</button>
+    <button onclick="stopStream()">Stop Stream</button>
+    <div id="stream-box" class="event-box"></div>
+
+    <h3>Stock Price Updates (2 seconds)</h3>
+    <input
+      type="text"
+      id="stockSymbol"
+      placeholder="Stock Symbol"
+      value="AAPL"
+    />
+    <button onclick="startStockStream()">Start</button>
+    <button onclick="stopStockStream()">Stop</button>
+    <div id="stock-box" class="event-box"></div>
+
+    <h3>Countdown</h3>
+    <input
+      type="number"
+      id="countdownStart"
+      placeholder="Start from"
+      value="10"
+    />
+    <button onclick="startCountdown()">Start Countdown</button>
+    <div id="countdown-box" class="event-box"></div>
+
+    <script>
+      let streamSource = null;
+      let stockSource = null;
+      let countdownSource = null;
+
+      function startStream() {
+        stopStream();
+        streamSource = new EventSource("/api/sse/stream");
+
+        streamSource.addEventListener("message", function (e) {
+          const data = JSON.parse(e.data);
+          addEvent(
+            "stream-box",
+            `[${data.id}] ${data.message} - ${data.timestamp}`,
+            "event"
+          );
+        });
+
+        streamSource.onerror = function (e) {
+          console.error("Stream error:", e);
+          addEvent("stream-box", "Error: Connection lost", "event");
+        };
+      }
+
+      function stopStream() {
+        if (streamSource) {
+          streamSource.close();
+          streamSource = null;
+        }
+      }
+
+      function startStockStream() {
+        stopStockStream();
+        const symbol = document.getElementById("stockSymbol").value || "AAPL";
+        stockSource = new EventSource("/api/sse/stock-price?symbol=" + symbol);
+
+        stockSource.addEventListener("stock-update", function (e) {
+          const data = JSON.parse(e.data);
+          addEvent(
+            "stock-box",
+            `${data.symbol}: $${data.price.toFixed(2)} at ${data.timestamp}`,
+            "stock"
+          );
+        });
+      }
+
+      function stopStockStream() {
+        if (stockSource) {
+          stockSource.close();
+          stockSource = null;
+        }
+      }
+
+      function startCountdown() {
+        if (countdownSource) countdownSource.close();
+
+        document.getElementById("countdown-box").innerHTML = "";
+        const start = document.getElementById("countdownStart").value || 10;
+        countdownSource = new EventSource("/api/sse/countdown?start=" + start);
+
+        countdownSource.addEventListener("countdown", function (e) {
+          addEvent("countdown-box", "Countdown: " + e.data, "notification");
+
+          if (e.data === "Finished!") {
+            countdownSource.close();
+          }
+        });
+      }
+
+      function addEvent(boxId, message, className) {
+        const box = document.getElementById(boxId);
+        const eventDiv = document.createElement("div");
+        eventDiv.className = className;
+        eventDiv.textContent = message;
+        box.appendChild(eventDiv);
+        box.scrollTop = box.scrollHeight;
+      }
+    </script>
+  </body>
+</html>

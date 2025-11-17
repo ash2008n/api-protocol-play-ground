@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebSocket Chat Demo</title>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+      }
+      #chat-area {
+        border: 1px solid #ccc;
+        padding: 10px;
+        height: 300px;
+        overflow-y: scroll;
+        margin-bottom: 10px;
+      }
+      .message {
+        margin: 5px 0;
+        padding: 5px;
+        background: #f0f0f0;
+        border-radius: 5px;
+      }
+      .notification {
+        margin: 5px 0;
+        padding: 5px;
+        background: #ffffcc;
+        border-radius: 5px;
+        border-left: 4px solid #ff9900;
+      }
+      input,
+      button {
+        padding: 10px;
+        margin: 5px;
+      }
+      #messageInput {
+        width: 60%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>WebSocket Chat & Notifications</h1>
+
+    <div id="username-form">
+      <input type="text" id="username" placeholder="Enter your name" />
+      <button onclick="connect()">Connect</button>
+    </div>
+
+    <div id="chat-page" style="display: none">
+      <h3>Chat Messages</h3>
+      <div id="chat-area"></div>
+      <input type="text" id="messageInput" placeholder="Type a message..." />
+      <button onclick="sendMessage()">Send</button>
+      <button onclick="disconnect()">Disconnect</button>
+
+      <h3>Notifications</h3>
+      <div
+        id="notification-area"
+        style="
+          border: 1px solid #ccc;
+          padding: 10px;
+          height: 150px;
+          overflow-y: scroll;
+        "
+      ></div>
+    </div>
+
+    <script>
+      var stompClient = null;
+
+      function connect() {
+        var username = document.getElementById("username").value.trim();
+        if (!username) {
+          alert("Please enter your name");
+          return;
+        }
+
+        var socket = new SockJS("/ws");
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function (frame) {
+          console.log("Connected: " + frame);
+          document.getElementById("username-form").style.display = "none";
+          document.getElementById("chat-page").style.display = "block";
+
+          // Subscribe to public chat
+          stompClient.subscribe("/topic/public", function (message) {
+            showMessage(JSON.parse(message.body));
+          });
+
+          // Subscribe to notifications
+          stompClient.subscribe("/topic/notifications", function (message) {
+            showNotification(JSON.parse(message.body));
+          });
+
+          // Send JOIN message
+          stompClient.send(
+            "/app/chat.join",
+            {},
+            JSON.stringify({
+              from: username,
+              type: "JOIN",
+            })
+          );
+        });
+      }
+
+      function disconnect() {
+        if (stompClient != null) {
+          stompClient.disconnect();
+        }
+        document.getElementById("username-form").style.display = "block";
+        document.getElementById("chat-page").style.display = "none";
+        console.log("Disconnected");
+      }
+
+      function sendMessage() {
+        var messageInput = document.getElementById("messageInput");
+        var messageContent = messageInput.value.trim();
+
+        if (messageContent && stompClient) {
+          var chatMessage = {
+            from: document.getElementById("username").value,
+            content: messageContent,
+            type: "CHAT",
+          };
+          stompClient.send("/app/chat.send", {}, JSON.stringify(chatMessage));
+          messageInput.value = "";
+        }
+      }
+
+      function showMessage(message) {
+        var chatArea = document.getElementById("chat-area");
+        var messageDiv = document.createElement("div");
+        messageDiv.className = "message";
+
+        if (message.type === "JOIN") {
+          messageDiv.textContent = message.from + " joined!";
+          messageDiv.style.background = "#d4edda";
+        } else if (message.type === "LEAVE") {
+          messageDiv.textContent = message.from + " left!";
+          messageDiv.style.background = "#f8d7da";
+        } else {
+          messageDiv.textContent = message.from + ": " + message.content;
+        }
+
+        chatArea.appendChild(messageDiv);
+        chatArea.scrollTop = chatArea.scrollHeight;
+      }
+
+      function showNotification(notification) {
+        var notificationArea = document.getElementById("notification-area");
+        var notifDiv = document.createElement("div");
+        notifDiv.className = "notification";
+        notifDiv.textContent =
+          "[" +
+          notification.type +
+          "] " +
+          notification.message +
+          " (" +
+          notification.timestamp +
+          ")";
+        notificationArea.appendChild(notifDiv);
+        notificationArea.scrollTop = notificationArea.scrollHeight;
+      }
+
+      document
+        .getElementById("messageInput")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            sendMessage();
+          }
+        });
+    </script>
+  </body>
+</html>

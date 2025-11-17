@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GraphQL Playground</title>
+    <style>
+      body {
+        height: 100%;
+        margin: 0;
+        width: 100%;
+        overflow: hidden;
+      }
+      #graphiql {
+        height: 100vh;
+      }
+    </style>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.production.min.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/graphiql@3.0.10/graphiql.min.css"
+    />
+  </head>
+  <body>
+    <div id="graphiql">Loading...</div>
+    <script
+      src="https://unpkg.com/graphiql@3.0.10/graphiql.min.js"
+      type="application/javascript"
+    ></script>
+    <script>
+      const root = ReactDOM.createRoot(document.getElementById("graphiql"));
+      const fetcher = GraphiQL.createFetcher({
+        url: "/graphql",
+      });
+      root.render(
+        React.createElement(GraphiQL, {
+          fetcher: fetcher,
+          defaultEditorToolsVisibility: true,
+        })
+      );
+    </script>
+  </body>
+</html>
